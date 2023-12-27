@@ -14,7 +14,7 @@ public class SpotifyService {
                 .Builder()
                 .setClientId(clientID)
                 .setClientSecret(clientSecret)
-                .setRedirectUri(SpotifyHttpManager.makeUri("http://localhost:8090/hello"))
+                .setRedirectUri(SpotifyHttpManager.makeUri("https://vire-wade.onrender.com/hello"))
                 .build();
     }
 
