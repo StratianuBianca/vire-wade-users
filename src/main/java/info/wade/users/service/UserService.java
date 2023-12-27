@@ -14,6 +14,7 @@ public class UserService {
     public void setSpotifyToken(Long userId, String token, String refreshToken) {
         User user = userRepository.findById(userId);
         user.setSpotifyToken(token);
+        user.setRefreshToken(refreshToken);
         userRepository.save(user);
     }
 
