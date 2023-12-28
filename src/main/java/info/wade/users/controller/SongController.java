@@ -1,6 +1,7 @@
 package info.wade.users.controller;
 
 import info.wade.users.dto.PlaylistDTO;
+import info.wade.users.dto.PlaylistsDTO;
 import info.wade.users.dto.SongDTO;
 import info.wade.users.service.SongService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,14 @@ public class SongController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(song, HttpStatus.OK);
+    }
+    @PutMapping("/songs/{songId}/playlists")
+    public ResponseEntity<?> postSongToMultiplePlaylists(@PathVariable Long songId, @RequestBody PlaylistsDTO playlistIds){
+        boolean exist = songService.addSongToMultiplePlaylists(songId, playlistIds);
+        if(exist){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     @GetMapping("/songs/playlists/{songId}") //ok
     public ResponseEntity<?> getAllPlaylistWithSong(@PathVariable Long songId){

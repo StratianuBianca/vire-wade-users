@@ -1,6 +1,7 @@
 package info.wade.users.service;
 
 import info.wade.users.dto.PlaylistDTO;
+import info.wade.users.dto.PlaylistsDTO;
 import info.wade.users.dto.SongDTO;
 import info.wade.users.entity.Album;
 import info.wade.users.entity.Playlist;
@@ -43,6 +44,24 @@ public class SongService {
             songDTOS.add(songDTO);
         }
         return songDTOS;
+    }
+
+    public boolean addSongToMultiplePlaylists(Long songId, PlaylistsDTO playlistIds){
+        Optional<Song> queryResult = songRepository.findById(songId);
+        if(queryResult.isPresent()){
+            Song song = queryResult.get();
+            for(Long id:playlistIds.getPlaylistIds()){
+                Optional<Playlist> queryPlaylist = playlistRepository.findById(id);
+                if(queryPlaylist.isPresent()){
+                    Playlist playlist = queryPlaylist.get();
+                    playlist.addSong(song);
+                    playlistRepository.save(playlist);
+                }
+            }
+            return true;
+        }
+
+        return false;
     }
 
     public SongDTO getSongById(Long songId){
