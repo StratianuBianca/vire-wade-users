@@ -107,7 +107,7 @@ public class AlbumService {
         return songs;
     }
 
-    public void deleteAlbum(Long id){
+    public boolean deleteAlbum(Long id){
         Optional<Album> queryResult = albumRepository.findById(id);
         if(queryResult.isPresent()){
             Album album = queryResult.get();
@@ -122,7 +122,9 @@ public class AlbumService {
                 songRepository.save(song);
             }
             albumRepository.delete(album);
+            return true;
         }
+        return false;
     }
 
     public AlbumDTO updateAlbum(AlbumDTO albumDTO){
@@ -134,8 +136,9 @@ public class AlbumService {
             this.deleteAlbumFromSong(album.getSongs(), album);
             album.setSongs(new ArrayList<>());
             setSongToAlbum(albumDTO, album);
+            return albumDTO;
         }
-        return albumDTO;
+        return new AlbumDTO();
     }
     public void deleteAlbumFromSong(List<Song> songs, Album album){
         for(Song song:songs){

@@ -32,16 +32,23 @@ public class ArtistController {
         ArtistDTO artist = artistService.addArtist(artistDTO);
         return new ResponseEntity<>(artist, HttpStatus.OK);
     }
-    @PutMapping("/artists") //ok
-    public ResponseEntity<?> putArtist(@RequestBody ArtistDTO artistDTO){
+    @PutMapping("/artists/{artistId}") //ok
+    public ResponseEntity<?> putArtist(@PathVariable Long artistId, @RequestBody ArtistDTO artistDTO){
+        artistDTO.setId(artistId);
         ArtistDTO artist = artistService.updateArtist(artistDTO);
+        if(artist.getId() == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(artist, HttpStatus.OK);
     }
 
     @DeleteMapping("/artists/{artistId}") //ok
     public ResponseEntity<?> deleteArtistById(@PathVariable Long artistId){
-        artistService.deleteArtist(artistId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        boolean exist = artistService.deleteArtist(artistId);
+        if(exist){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
 }

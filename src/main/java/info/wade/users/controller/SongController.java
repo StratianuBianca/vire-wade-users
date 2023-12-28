@@ -31,25 +31,38 @@ public class SongController {
     @PostMapping("/songs") //ok
     public ResponseEntity<?> postSong(@RequestBody SongDTO songDTO) {
         SongDTO song = songService.createSong(songDTO);
+        if(song.getId() == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(song, HttpStatus.OK);
     }
 
-    @PutMapping("/songs") //ok
-    public ResponseEntity<?> putSong(@RequestBody SongDTO songDTO) {
+    @PutMapping("/songs/{songId}") //ok
+    public ResponseEntity<?> putSong(@PathVariable Long songId, @RequestBody SongDTO songDTO) {
+        songDTO.setId(songId);
         SongDTO song = songService.updateSong(songDTO);
+        if(song.getId() == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(song, HttpStatus.OK);
     }
     @GetMapping("/songs/playlists/{songId}") //ok
     public ResponseEntity<?> getAllPlaylistWithSong(@PathVariable Long songId){
         List<PlaylistDTO> playlists = songService.getAllPlaylistWithSong(songId);
+        if(playlists.size() == 0){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(playlists, HttpStatus.OK);
 
     }
 
     @DeleteMapping("/songs/{songId}") ///ok
     public ResponseEntity<?> deleteSongById(@PathVariable Long songId){
-        songService.deleteSong(songId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        boolean exist = songService.deleteSong(songId);
+        if(exist){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
 }

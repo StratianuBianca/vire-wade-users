@@ -87,7 +87,7 @@ public class ArtistService {
         this.addArtistToAlbum(artist, artistDTO.getAlbumIds());
         return artistDTO;
     }
-    public void deleteArtist(Long id){
+    public boolean deleteArtist(Long id){
         Optional<Artist> queryResult = artistRepository.findById(id);
         if(queryResult.isPresent()){
             Artist artist = queryResult.get();
@@ -97,8 +97,9 @@ public class ArtistService {
                 albumRepository.save(album);
             }
             artistRepository.delete(artist);
+            return true;
         }
-
+        return false;
     }
     public ArtistDTO updateArtist(ArtistDTO artistDTO){
         Optional<Artist> queryResult = artistRepository.findById(artistDTO.getId());
@@ -113,7 +114,7 @@ public class ArtistService {
             this.addArtistToAlbum(artist, artistDTO.getAlbumIds());
             return artistDTO;
         }
-        return artistDTO;
+        return new ArtistDTO();
 
     }
 }

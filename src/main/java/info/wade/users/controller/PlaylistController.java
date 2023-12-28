@@ -57,15 +57,22 @@ public class PlaylistController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/playlists") //ok
-    public ResponseEntity<?> putPlaylist(@RequestBody PlaylistDTO playlistDTO) {
+    @PutMapping("/playlists/{playlistId}") //ok
+    public ResponseEntity<?> putPlaylist(@PathVariable Long playlistId, @RequestBody PlaylistDTO playlistDTO) {
+        playlistDTO.setId(playlistId);
         PlaylistDTO playlist = playlistService.updatePlaylist(playlistDTO);
+        if(playlist.getId() == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(playlist, HttpStatus.OK);
     }
 
     @DeleteMapping("/playlists/{playlistId}") //ok
     public ResponseEntity<?> deletePlaylistById(@PathVariable Long playlistId){
-        playlistService.deletePlaylist(playlistId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        boolean exist = playlistService.deletePlaylist(playlistId);
+        if(exist){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

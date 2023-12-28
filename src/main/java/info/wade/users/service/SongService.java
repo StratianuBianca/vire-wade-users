@@ -54,18 +54,21 @@ public class SongService {
             songDTO.setLength(song.getLength());
             songDTO.setTitle(song.getTitle());
             songDTO.setRelease_date(song.getRelease_date());
+            songDTO.setAlbumId(song.getAlbum().getId());
             songDTO.setId(song.getId());
 
         }
         return songDTO;
     }
 
-    public void deleteSong(Long songId){
+    public boolean deleteSong(Long songId){
         Optional<Song> queryResult = songRepository.findById(songId);
         if(queryResult.isPresent()){
             Song song = queryResult.get();
             songRepository.delete(song);
+            return true;
         }
+        return false;
     }
 
     public SongDTO createSong(SongDTO songDTO){
@@ -100,11 +103,34 @@ public class SongService {
             album1.addToSongs(song);
             albumRepository.save(album1);
             songDTO.setId(song.getId());
+            return songDTO;
         }
-        return songDTO;
+        return new SongDTO();
     }
     public List<PlaylistDTO> getAllPlaylistWithSong(Long songId){
         Optional<Song> queryResult = songRepository.findById(songId);
+        if(queryResult.isPresent()){
+            List<PlaylistDTO> playlistDTOS = new ArrayList<>();
+            List<Playlist> playlists = playlistRepository.findAll();
+            for(Playlist playlist:playlists){
+                if(playlist.getSongs().contains(queryResult.get())){
+                    PlaylistDTO playlistDTO = new PlaylistDTO();
+                    playlistDTO.setCreatedDate(playlist.getCreate_date());
+                    playlistDTO.setTitle(playlist.getTitle());
+                    playlistDTO.setId(playlist.getPlaylist_id());
+                    playlistDTO.setCategory(playlist.getCategory());
+                    playlistDTO.setCreatedById(playlist.getCreatedBy().getId());
+                    List<Song> songs = playlist.getSongs();
+                    List<Long> ids = new ArrayList<>();
+                    for(Song song:songs){
+                        ids.add(song.getId());
+                    }
+                    playlistDTO.setSongIds(ids);
+                    playlistDTOS.add(playlistDTO);
+                }
+            }
+            return playlistDTOS;
+        }
         return new ArrayList<>();
     }
 

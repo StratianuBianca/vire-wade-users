@@ -68,14 +68,16 @@ public class PlaylistService {
         }
         return playlistDTO;
     }
-    public void deletePlaylist(Long id){
+    public boolean deletePlaylist(Long id){
         Optional<Playlist> queryResult = playlistRepository.findById(id);
         if(queryResult.isPresent()){
             Playlist playlist = queryResult.get();
             List<Song> songs = playlist.getSongs();
             songRepository.saveAll(songs);
             playlistRepository.delete(playlist);
+            return true;
         }
+        return false;
     }
     public PlaylistDTO createPlaylist(PlaylistDTO playlistDTO){
         Playlist playlist = new Playlist();
@@ -107,8 +109,9 @@ public class PlaylistService {
             playlistRepository.save(playlist);
             setPlaylistToSong(playlistDTO.getSongIds(), playlist);
             playlistDTO.setId(playlist.getPlaylist_id());
+            return playlistDTO;
         }
-        return playlistDTO;
+        return new PlaylistDTO();
     }
 
     public List<PlaylistDTO> getAllPlaylistsFromAUser(Long userId){

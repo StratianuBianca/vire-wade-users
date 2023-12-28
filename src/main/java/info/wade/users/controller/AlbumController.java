@@ -34,16 +34,23 @@ public class AlbumController {
         return new ResponseEntity<>(album, HttpStatus.OK);
     }
 
-    @PutMapping("/albums") //ok cred, de revazut la list songs
-    public ResponseEntity<?> putAlbum(@RequestBody AlbumDTO albumDTO) {
+    @PutMapping("/albums/{albumId}") //ok cred, de revazut la list songs
+    public ResponseEntity<?> putAlbum(@PathVariable Long albumId, @RequestBody AlbumDTO albumDTO) {
+        albumDTO.setId(albumId);
         AlbumDTO album = albumService.updateAlbum(albumDTO);
+        if(album.getId() == null){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(album, HttpStatus.OK);
 
     }
     @DeleteMapping("/albums/{albumId}") //ok, cand stergem albumul se sterg si melodiile
     public ResponseEntity<?> deleteAlbumById(@PathVariable Long albumId){
-        albumService.deleteAlbum(albumId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        boolean exist = albumService.deleteAlbum(albumId);
+        if(exist){
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
 }
