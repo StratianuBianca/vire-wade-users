@@ -6,6 +6,7 @@ import info.wade.users.dto.SongDTO;
 import info.wade.users.entity.Album;
 import info.wade.users.entity.Playlist;
 import info.wade.users.entity.Song;
+import info.wade.users.entity.User;
 import info.wade.users.repository.AlbumRepository;
 import info.wade.users.repository.PlaylistRepository;
 import info.wade.users.repository.SongRepository;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -46,7 +48,7 @@ public class SongService {
         return songDTOS;
     }
 
-    public boolean addSongToMultiplePlaylists(Long songId, PlaylistsDTO playlistIds){
+    public boolean addSongToMultiplePlaylists(Long songId, Long userId, PlaylistsDTO playlistIds){
         Optional<Song> queryResult = songRepository.findById(songId);
         if(queryResult.isPresent()){
             Song song = queryResult.get();
@@ -54,13 +56,29 @@ public class SongService {
                 Optional<Playlist> queryPlaylist = playlistRepository.findById(id);
                 if(queryPlaylist.isPresent()){
                     Playlist playlist = queryPlaylist.get();
-                    playlist.addSong(song);
-                    playlistRepository.save(playlist);
+                    boolean isUserOk = this.isUserInUsersList(playlist.getUsers(), userId);
+                    if(isUserOk){
+                        playlist.addSong(song);
+                        playlistRepository.save(playlist);
+                    }
+                    else{
+                        return false;
+                    }
                 }
             }
             return true;
         }
 
+        return false;
+    }
+    public boolean isUserInUsersList(List<User> users, Long userId){
+
+        for(User user:users){
+            System.out.println(userId + "  " + user.getId());
+            if(Objects.equals(user.getId(), userId)){
+                return true;
+            }
+        }
         return false;
     }
 
@@ -138,7 +156,12 @@ public class SongService {
                     playlistDTO.setTitle(playlist.getTitle());
                     playlistDTO.setId(playlist.getPlaylist_id());
                     playlistDTO.setCategory(playlist.getCategory());
-                    playlistDTO.setCreatedById(playlist.getCreatedBy().getId());
+                    List<User> users = playlist.getUsers();
+                    List<Long> userIds = new ArrayList<>();
+                    for(User user:users){
+                        userIds.add(user.getId());
+                    }
+                    playlistDTO.setUserIds(userIds);
                     List<Song> songs = playlist.getSongs();
                     List<Long> ids = new ArrayList<>();
                     for(Song song:songs){

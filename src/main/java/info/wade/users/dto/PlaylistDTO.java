@@ -13,6 +13,6 @@ public class PlaylistDTO {
     private String title;
     private String category;
     private List<Long> songIds;
-    private Long createdById;
+    private List<Long> userIds;
     private Date createdDate;
 }

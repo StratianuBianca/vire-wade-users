@@ -32,14 +32,20 @@ public class Playlist {
     )
     private List<Song> songs;
 
-    @ManyToOne()
-    @JoinColumn(name = "user_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private User createdBy;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "playlist_user",
+            joinColumns = @JoinColumn(name = "playlist_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> users;
 
     private Date create_date;
 
     public void addSong(Song song){
         this.songs.add(song);
+    }
+
+    public void addUser(User user){
+        this.users.add(user);
     }
 }

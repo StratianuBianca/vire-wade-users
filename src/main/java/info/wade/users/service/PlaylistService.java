@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -33,7 +34,12 @@ public class PlaylistService {
             playlistDTO.setCategory(playlist.getCategory());
             playlistDTO.setTitle(playlist.getTitle());
             playlistDTO.setId(playlist.getPlaylist_id());
-            playlistDTO.setCreatedById(playlist.getCreatedBy().getId());
+            List<User> users = playlist.getUsers();
+            List<Long> userIds = new ArrayList<>();
+            for(User user:users){
+                userIds.add(user.getId());
+            }
+            playlistDTO.setUserIds(userIds);
             playlistDTO.setCreatedDate(playlist.getCreate_date());
             List<Long> ids = new ArrayList<>();
             List<Song> songs = playlist.getSongs();
@@ -57,7 +63,12 @@ public class PlaylistService {
             playlistDTO.setTitle(playlist.getTitle());
             playlistDTO.setId(playlist.getPlaylist_id());
             playlistDTO.setCategory(playlist.getCategory());
-            playlistDTO.setCreatedById(playlist.getCreatedBy().getId());
+            List<User> users = playlist.getUsers();
+            List<Long> userIds = new ArrayList<>();
+            for(User user:users){
+                userIds.add(user.getId());
+            }
+            playlistDTO.setUserIds(userIds);
             playlistDTO.setCreatedDate(playlist.getCreate_date());
             List<Song> songs = playlist.getSongs();
             List<Long> ids = new ArrayList<>();
@@ -68,57 +79,135 @@ public class PlaylistService {
         }
         return playlistDTO;
     }
-    public boolean deletePlaylist(Long id){
-        Optional<Playlist> queryResult = playlistRepository.findById(id);
+    public boolean deletePlaylist(Long playlistId, Long userId){
+        Optional<Playlist> queryResult = playlistRepository.findById(playlistId);
         if(queryResult.isPresent()){
             Playlist playlist = queryResult.get();
-            List<Song> songs = playlist.getSongs();
-            songRepository.saveAll(songs);
-            playlistRepository.delete(playlist);
-            return true;
+            boolean isUserOk = this.isUserInUsersList(playlist.getUsers(), userId);
+            if(isUserOk){
+                List<Song> songs = playlist.getSongs();
+                songRepository.saveAll(songs);
+                playlistRepository.delete(playlist);
+                return true;
+            }
         }
         return false;
     }
+
+    public boolean isUserInUsersList(List<User> users, Long userId){
+
+        for(User user:users){
+            if(Objects.equals(user.getId(), userId)){
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean verifyIfUserHasPlaylist(Long userId, Long playlistId){
+        Optional<Playlist> playlistOptional = playlistRepository.findById(playlistId);
+        Optional<User> userOptional = Optional.ofNullable(userRepository.findById(userId));
+        if(playlistOptional.isPresent() && userOptional.isPresent()){
+            Playlist playlist = playlistOptional.get();
+            return this.isUserInUsersList(playlist.getUsers(), userId);
+        }
+        return false;
+    }
+    public boolean addUserToPlaylist(Long playlistId, Long userId){
+        Optional<Playlist> queryResultPlaylist = playlistRepository.findById(playlistId);
+        Optional<User> queryResultUser = Optional.ofNullable(userRepository.findById(userId));
+        if(queryResultPlaylist.isPresent() && queryResultUser.isPresent()){
+            Playlist playlist = queryResultPlaylist.get();
+            User user = queryResultUser.get();
+            playlist.addUser(user);
+            playlistRepository.save(playlist);
+            return true;
+        }
+        return false;
+
+    }
+    public List<Playlist> userPlaylists(List<Playlist> playlists, Long userId){
+        List<Playlist> userPlaylists = new ArrayList<>();
+        for(Playlist playlist:playlists){
+            boolean userOk = this.isUserInUsersList(playlist.getUsers(), userId);
+            if(userOk){
+                userPlaylists.add(playlist);
+            }
+        }
+        return userPlaylists;
+    }
+
     public PlaylistDTO createPlaylist(PlaylistDTO playlistDTO){
         Playlist playlist = new Playlist();
-        User user = userRepository.findById(playlistDTO.getCreatedById());
-        if(user != null){
+        List<User> users = new ArrayList<>();
+        boolean ok = true;
+        for(Long id:playlistDTO.getUserIds()){
+            User user = userRepository.findById(id);
+            if(user == null){
+                ok = false;
+            }
+
+        }
+        if(ok){
             playlist.setCategory(playlistDTO.getCategory());
-            playlist.setCreatedBy(user);
+            for(Long id:playlistDTO.getUserIds()){
+                User user = userRepository.findById(id);
+                if(user != null){
+                   users.add(user);
+                }
+
+            }
+            playlist.setUsers(users);
             playlist.setTitle(playlistDTO.getTitle());
             playlist.setCreate_date(playlistDTO.getCreatedDate());
             List<Song> songs = this.setSongs(playlistDTO.getSongIds());
             playlist.setSongs(songs);
             playlistRepository.save(playlist);
-            setPlaylistToSong(playlistDTO.getSongIds(), playlist);
             playlistDTO.setId(playlist.getPlaylist_id());
         }
         return playlistDTO;
     }
 
-    public PlaylistDTO updatePlaylist(PlaylistDTO playlistDTO){
+    public PlaylistDTO updatePlaylist(PlaylistDTO playlistDTO, Long userId){
         Optional<Playlist> queryResult = playlistRepository.findById(playlistDTO.getId());
-        User user = userRepository.findById(playlistDTO.getCreatedById());
-        if(queryResult.isPresent() && user != null){
+        boolean ok = true;
+        List<User> users = new ArrayList<>();
+        for(Long id:playlistDTO.getUserIds()){
+            User user = userRepository.findById(id);
+            if(user == null){
+                ok = false;
+            }
+
+        }
+        if(queryResult.isPresent() && ok){
             Playlist playlist = queryResult.get();
-            playlist.setTitle(playlistDTO.getTitle());
-            playlist.setCategory(playlistDTO.getCategory());
-            playlist.setCreatedBy(user);
-            playlist.setCreate_date(playlist.getCreate_date());
-            playlist.setSongs(this.setSongs(playlistDTO.getSongIds()));
-            playlistRepository.save(playlist);
-            setPlaylistToSong(playlistDTO.getSongIds(), playlist);
-            playlistDTO.setId(playlist.getPlaylist_id());
-            return playlistDTO;
+            boolean isUserOk = this.isUserInUsersList(playlist.getUsers(), userId);
+            if(isUserOk){
+                playlist.setTitle(playlistDTO.getTitle());
+                playlist.setCategory(playlistDTO.getCategory());
+                for(Long id:playlistDTO.getUserIds()){
+                    User user = userRepository.findById(id);
+                    if(user != null){
+                        users.add(user);
+                    }
+
+                }
+                playlist.setUsers(users);
+                playlist.setCreate_date(playlistDTO.getCreatedDate());
+                playlist.setSongs(this.setSongs(playlistDTO.getSongIds()));
+                playlistRepository.save(playlist);
+                playlistDTO.setId(playlist.getPlaylist_id());
+                return playlistDTO;
+            }
+
         }
         return new PlaylistDTO();
     }
 
     public List<PlaylistDTO> getAllPlaylistsFromAUser(Long userId){
         User user = userRepository.findById(userId);
-        List<Playlist> playlists = new ArrayList<>();
+        List<Playlist> playlists = playlistRepository.findAll();
         if(user != null){
-            playlists = playlistRepository.getPlaylistsByCreatedBy(user);
+            playlists = this.userPlaylists(playlists, userId);
         }
 
         return this.getAllPlaylistDTOS(playlists);
@@ -141,28 +230,53 @@ public class PlaylistService {
         }
         return songDTOS;
     }
+    public List<SongDTO> getAllSongsByPlaylistUserId(Long playlistId, Long userId){
+        Optional<Playlist> queryResult = playlistRepository.findById(playlistId);
+        List<SongDTO> songDTOS = new ArrayList<>();
+        if(queryResult.isPresent()){
+            Playlist playlist = queryResult.get();
+            boolean userOk = this.isUserInUsersList(playlist.getUsers(), userId);
+            if(userOk){
+                for(Song song:playlist.getSongs()){
+                    SongDTO songDTO = new SongDTO();
+                    songDTO.setId(song.getId());
+                    songDTO.setLength(song.getLength());
+                    songDTO.setDescription(song.getDescription());
+                    songDTO.setRelease_date(song.getRelease_date());
+                    songDTO.setTitle(song.getTitle());
+                    songDTO.setAlbumId(song.getAlbum().getId());
+                    songDTOS.add(songDTO);
+                }
+            }
+        }
+        return songDTOS;
+    }
 
-    public void addSongToPlaylist(Long playlistId, Long songId){
+    public void addSongToPlaylist(Long playlistId, Long songId, Long userId){
         Optional<Playlist> playlist = playlistRepository.findById(playlistId);
         Optional<Song> song = songRepository.findById(songId);
         if(playlist.isPresent() && song.isPresent()){
             Playlist playlist1 = playlist.get();
-            Song song1 = song.get();
-            playlist1.getSongs().add(song1);
-            playlistRepository.save(playlist1);
-            setPlaylistToSong(List.of(songId), playlist.get());
+            boolean isUserOk = this.isUserInUsersList(playlist1.getUsers(), userId);
+            if(isUserOk){
+                Song song1 = song.get();
+                playlist1.getSongs().add(song1);
+                playlistRepository.save(playlist1);
+            }
         }
     }
 
-    public void deleteSongFromPlaylist(Long playlistId, Long songId){
+    public void deleteSongFromPlaylist(Long playlistId, Long songId, Long userId){
         Optional<Playlist> playlist = playlistRepository.findById(playlistId);
         Optional<Song> song = songRepository.findById(songId);
         if(playlist.isPresent() && song.isPresent()){
             Playlist playlist1 = playlist.get();
-            Song song1 = song.get();
-            playlist1.getSongs().remove(song1);
-            playlistRepository.save(playlist1);
-            this.deletePlaylistFromSong(List.of(songId), playlist1);
+            boolean isUserOk = this.isUserInUsersList(playlist1.getUsers(), userId);
+            if(isUserOk){
+                Song song1 = song.get();
+                playlist1.getSongs().remove(song1);
+                playlistRepository.save(playlist1);
+            }
         }
 
     }
@@ -174,24 +288,6 @@ public class PlaylistService {
             song.ifPresent(songs::add);
         }
         return songs;
-    }
-    public void deletePlaylistFromSong(List<Long> ids, Playlist playlist){
-        for(Long id:ids){
-            Optional<Song> queryResult = songRepository.findById(id);
-            if(queryResult.isPresent()){
-                Song song = queryResult.get();
-                songRepository.save(song);
-            }
-        }
-    }
-    public void setPlaylistToSong(List<Long> ids, Playlist playlist){
-        for(Long id:ids){
-            Optional<Song> queryResult = songRepository.findById(id);
-            if(queryResult.isPresent()){
-                Song song = queryResult.get();
-                songRepository.save(song);
-            }
-        }
     }
 
 }

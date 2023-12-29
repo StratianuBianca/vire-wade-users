@@ -47,9 +47,9 @@ public class SongController {
         }
         return new ResponseEntity<>(song, HttpStatus.OK);
     }
-    @PutMapping("/songs/{songId}/playlists")
-    public ResponseEntity<?> postSongToMultiplePlaylists(@PathVariable Long songId, @RequestBody PlaylistsDTO playlistIds){
-        boolean exist = songService.addSongToMultiplePlaylists(songId, playlistIds);
+    @PutMapping("/songs/{songId}/playlists/user/{userId}")
+    public ResponseEntity<?> postSongToMultiplePlaylists(@PathVariable Long songId, @PathVariable Long userId, @RequestBody PlaylistsDTO playlistIds){
+        boolean exist = songService.addSongToMultiplePlaylists(songId, userId, playlistIds);
         if(exist){
             return new ResponseEntity<>(HttpStatus.OK);
         }
