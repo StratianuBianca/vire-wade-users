@@ -31,6 +31,8 @@ public class Song {
 
     private Date release_date;
 
+    private String category;
+
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "album_id", nullable = false)
     private Album album;

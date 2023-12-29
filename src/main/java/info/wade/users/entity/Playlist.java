@@ -23,7 +23,6 @@ public class Playlist {
     private UUID playlist_id;
 
     private String title;
-    private String category;
 
     @ManyToMany(
             fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})

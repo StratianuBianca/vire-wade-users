@@ -150,7 +150,6 @@ public class SongService {
                     playlistDTO.setCreatedDate(playlist.getCreate_date());
                     playlistDTO.setTitle(playlist.getTitle());
                     playlistDTO.setId(playlist.getPlaylist_id());
-                    playlistDTO.setCategory(playlist.getCategory());
                     List<User> users = playlist.getUsers();
                     List<UUID> userIds = new ArrayList<>();
                     for(User user:users){

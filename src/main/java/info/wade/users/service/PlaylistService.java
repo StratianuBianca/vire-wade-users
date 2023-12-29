@@ -11,6 +11,9 @@ import info.wade.users.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -28,7 +31,6 @@ public class PlaylistService {
         List<PlaylistDTO> playlistDTOS = new ArrayList<>();
         for(Playlist playlist:playlists){
             PlaylistDTO playlistDTO = new PlaylistDTO();
-            playlistDTO.setCategory(playlist.getCategory());
             playlistDTO.setTitle(playlist.getTitle());
             playlistDTO.setId(playlist.getPlaylist_id());
             List<User> users = playlist.getUsers();
@@ -59,7 +61,6 @@ public class PlaylistService {
             Playlist playlist = queryResult.get();
             playlistDTO.setTitle(playlist.getTitle());
             playlistDTO.setId(playlist.getPlaylist_id());
-            playlistDTO.setCategory(playlist.getCategory());
             List<User> users = playlist.getUsers();
             List<UUID> userIds = new ArrayList<>();
             for(User user:users){
@@ -145,7 +146,6 @@ public class PlaylistService {
 
         }
         if(ok){
-            playlist.setCategory(playlistDTO.getCategory());
             for(UUID id:playlistDTO.getUserIds()){
                 Optional<User> user = userRepository.findById(id);
                 user.ifPresent(users::add);
@@ -153,11 +153,13 @@ public class PlaylistService {
             }
             playlist.setUsers(users);
             playlist.setTitle(playlistDTO.getTitle());
-            playlist.setCreate_date(playlistDTO.getCreatedDate());
+            System.out.println(LocalDate.now());
+            playlist.setCreate_date(Date.from(LocalDateTime.now().atZone(ZoneId.of("Europe/Bucharest")).toInstant()));
             List<Song> songs = this.setSongs(playlistDTO.getSongIds());
             playlist.setSongs(songs);
             playlistRepository.save(playlist);
             playlistDTO.setId(playlist.getPlaylist_id());
+            playlistDTO.setCreatedDate(playlist.getCreate_date());
         }
         return playlistDTO;
     }
@@ -178,7 +180,6 @@ public class PlaylistService {
             boolean isUserOk = this.isUserInUsersList(playlist.getUsers(), userId);
             if(isUserOk){
                 playlist.setTitle(playlistDTO.getTitle());
-                playlist.setCategory(playlistDTO.getCategory());
                 for(UUID id:playlistDTO.getUserIds()){
                     Optional<User> user = userRepository.findById(id);
                     user.ifPresent(users::add);
