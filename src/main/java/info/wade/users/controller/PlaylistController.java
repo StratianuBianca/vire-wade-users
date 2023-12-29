@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -23,26 +24,26 @@ public class PlaylistController {
         return new ResponseEntity<>(playlistsList, HttpStatus.OK);
     }
     @GetMapping("/playlists/{playlistId}") //ok
-    public ResponseEntity<?> getPlaylistById(@PathVariable Long playlistId){
+    public ResponseEntity<?> getPlaylistById(@PathVariable UUID playlistId){
         PlaylistDTO playlist = playlistService.getPlaylistById(playlistId);
         return new ResponseEntity<>(playlist, HttpStatus.OK);
 
     }
     @GetMapping("/playlists/user/{userId}") //
-    public ResponseEntity<?> getPlaylistsByUserId(@PathVariable Long userId){
+    public ResponseEntity<?> getPlaylistsByUserId(@PathVariable UUID userId){
         List<PlaylistDTO> playlist = playlistService.getAllPlaylistsFromAUser(userId);
         return new ResponseEntity<>(playlist, HttpStatus.OK);
 
     }
 
     @GetMapping("/playlists/songs/{playlistId}") //ok
-    public ResponseEntity<?> getAllSongOfPlaylist(@PathVariable Long playlistId){
+    public ResponseEntity<?> getAllSongOfPlaylist(@PathVariable UUID playlistId){
         List<SongDTO> songs = playlistService.getAllSongsByPlaylist(playlistId);
         return new ResponseEntity<>(songs, HttpStatus.OK);
     }
 
     @GetMapping("/playlists/verify/user/{userId}/playlist/{playlistId}")
-    public ResponseEntity<?> verifyIfUserIsOk(@PathVariable Long userId, @PathVariable Long playlistId){
+    public ResponseEntity<?> verifyIfUserIsOk(@PathVariable UUID userId, @PathVariable UUID playlistId){
         boolean isOk = playlistService.verifyIfUserHasPlaylist(userId, playlistId);
         if(isOk){
             return new ResponseEntity<>(HttpStatus.OK);
@@ -51,7 +52,7 @@ public class PlaylistController {
     }
 
     @GetMapping("/playlists/songs/{playlistId}/{userId}") //ok
-    public ResponseEntity<?> getAllSongOfPlaylistByUserId(@PathVariable Long playlistId, @PathVariable Long userId){
+    public ResponseEntity<?> getAllSongOfPlaylistByUserId(@PathVariable UUID playlistId, @PathVariable UUID userId){
         List<SongDTO> songs = playlistService.getAllSongsByPlaylistUserId(playlistId, userId);
         return new ResponseEntity<>(songs, HttpStatus.OK);
     }
@@ -62,18 +63,18 @@ public class PlaylistController {
         return new ResponseEntity<>(playlist, HttpStatus.OK);
     }
     @PutMapping("/playlists/{playlistId}/songs/{songId}/user/{userId}") //ok
-    public ResponseEntity<?> postSongToPlaylist(@PathVariable Long playlistId, @PathVariable Long songId, @PathVariable Long userId){
+    public ResponseEntity<?> postSongToPlaylist(@PathVariable UUID playlistId, @PathVariable UUID songId, @PathVariable UUID userId){
         playlistService.addSongToPlaylist(playlistId, songId, userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @DeleteMapping("/playlist/{playlistId}/songs/{songId}/user/{userId}") //ok
-    public ResponseEntity<?> deleteSongToPlaylist(@PathVariable Long playlistId, @PathVariable Long songId, @PathVariable Long userId){
+    public ResponseEntity<?> deleteSongToPlaylist(@PathVariable UUID playlistId, @PathVariable UUID songId, @PathVariable UUID userId){
         playlistService.deleteSongFromPlaylist(playlistId, songId, userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/playlists/{playlistId}/{userId}") //ok
-    public ResponseEntity<?> putPlaylist(@PathVariable Long playlistId, @PathVariable Long userId, @RequestBody PlaylistDTO playlistDTO) {
+    public ResponseEntity<?> putPlaylist(@PathVariable UUID playlistId, @PathVariable UUID userId, @RequestBody PlaylistDTO playlistDTO) {
         playlistDTO.setId(playlistId);
         PlaylistDTO playlist = playlistService.updatePlaylist(playlistDTO, userId);
         if(playlist.getId() == null){
@@ -83,7 +84,7 @@ public class PlaylistController {
     }
 
     @PutMapping("/playlists/users/{playlistId}/{userId}")
-    public ResponseEntity<?> addUserToPlaylist(@PathVariable Long playlistId, @PathVariable Long userId){
+    public ResponseEntity<?> addUserToPlaylist(@PathVariable UUID playlistId, @PathVariable UUID userId){
         boolean ok = playlistService.addUserToPlaylist(playlistId, userId);
         if(ok){
             return new ResponseEntity<>(HttpStatus.OK);
@@ -94,7 +95,7 @@ public class PlaylistController {
     }
 
     @DeleteMapping("/playlists/{playlistId}/{userId}") //ok
-    public ResponseEntity<?> deletePlaylistById(@PathVariable Long playlistId, @PathVariable Long userId){
+    public ResponseEntity<?> deletePlaylistById(@PathVariable UUID playlistId, @PathVariable UUID userId){
         boolean exist = playlistService.deletePlaylist(playlistId, userId);
         if(exist){
             return new ResponseEntity<>(HttpStatus.OK);

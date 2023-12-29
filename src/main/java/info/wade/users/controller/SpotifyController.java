@@ -22,6 +22,7 @@ import se.michaelthelin.spotify.requests.data.users_profile.GetCurrentUsersProfi
 import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/spotify")
@@ -47,7 +48,7 @@ public class SpotifyController {
     }
 
     @GetMapping("/getToken")
-    public void getUserSpotifyToken(@RequestParam("code") String token, @RequestParam("userId") Long userId){
+    public void getUserSpotifyToken(@RequestParam("code") String token, @RequestParam("userId") UUID userId){
         SpotifyApi object = spotifyService.getSpotifyObject();
         AuthorizationCodeRequest authorizationCodeRequest = object.authorizationCode(token).build();
         User user = null;
@@ -68,7 +69,7 @@ public class SpotifyController {
     }
 
     @GetMapping(value = "/userTopSongs")
-    public Track[] getUserTopTracks(@RequestParam Long userId) {
+    public Track[] getUserTopTracks(@RequestParam UUID userId) {
         info.wade.users.entity.User user = userService.getUserById(userId);
 
         SpotifyApi object = spotifyService.getSpotifyObject();
@@ -94,7 +95,7 @@ public class SpotifyController {
 
 
     @GetMapping(value = "/userTopArtists")
-    public Artist[] getUserTopArtist(@RequestParam Long userId) throws IOException, ParseException, SpotifyWebApiException {
+    public Artist[] getUserTopArtist(@RequestParam UUID userId) throws IOException, ParseException, SpotifyWebApiException {
         info.wade.users.entity.User user = userService.getUserById(userId);
 
         SpotifyApi object = spotifyService.getSpotifyObject();
@@ -118,7 +119,7 @@ public class SpotifyController {
     }
 
     @GetMapping(value = "/userSavedAlbum")
-    public SavedAlbum[] getCurrentUserSavedAlbum(@RequestParam Long userId) {
+    public SavedAlbum[] getCurrentUserSavedAlbum(@RequestParam UUID userId) {
         info.wade.users.entity.User user = userService.getUserById(userId);
 
         SpotifyApi object = spotifyService.getSpotifyObject();

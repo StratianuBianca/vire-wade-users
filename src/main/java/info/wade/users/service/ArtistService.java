@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ArtistService {
@@ -33,7 +34,7 @@ public class ArtistService {
         return artistDTOS;
     }
 
-    public ArtistDTO getArtistById(Long id){
+    public ArtistDTO getArtistById(UUID id){
         Optional<Artist> queryResult = artistRepository.findById(id);
         ArtistDTO artistDTO = new ArtistDTO();
         if(queryResult.isPresent()){
@@ -46,7 +47,7 @@ public class ArtistService {
     private void setArtist(ArtistDTO artistDTO, Artist artist) {
         artistDTO.setId(artist.getId());
         artistDTO.setName(artist.getName());
-        List<Long> ids= new ArrayList<>();
+        List<UUID> ids= new ArrayList<>();
         List<Album> albums = artist.getAlbums();
         for(Album album:albums){
             ids.add(album.getId());
@@ -54,16 +55,16 @@ public class ArtistService {
         artistDTO.setAlbumIds(ids);
     }
 
-    public List<Album> setAlbums(List<Long> ids){
+    public List<Album> setAlbums(List<UUID> ids){
         List<Album> albums = new ArrayList<>();
-        for(Long id: ids){
+        for(UUID id: ids){
             Optional<Album> albumOptional = albumRepository.findById(id);
             albumOptional.ifPresent(albums::add);
         }
         return albums;
     }
-    public void addArtistToAlbum(Artist artist, List<Long> ids){
-        for(Long id: ids){
+    public void addArtistToAlbum(Artist artist, List<UUID> ids){
+        for(UUID id: ids){
             Optional<Album> queryResult = albumRepository.findById(id);
             if(queryResult.isPresent()){
                 Album album = queryResult.get();
@@ -87,7 +88,7 @@ public class ArtistService {
         this.addArtistToAlbum(artist, artistDTO.getAlbumIds());
         return artistDTO;
     }
-    public boolean deleteArtist(Long id){
+    public boolean deleteArtist(UUID id){
         Optional<Artist> queryResult = artistRepository.findById(id);
         if(queryResult.isPresent()){
             Artist artist = queryResult.get();

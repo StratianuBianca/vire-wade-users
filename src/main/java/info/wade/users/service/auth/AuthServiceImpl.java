@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Service
 public class AuthServiceImpl implements AuthService {
 
@@ -35,10 +38,11 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public RegisterDTO updateUser(UpdateUserDTO updateUserDTO){
-        User findIfUserExists = userRepository.findById(updateUserDTO.getId());
-        if(findIfUserExists == null){
+        Optional<User> queryResult = userRepository.findById(updateUserDTO.getId());
+        if(queryResult.isEmpty()){
             return new RegisterDTO();
         }
+        User findIfUserExists = queryResult.get();
         findIfUserExists.setEmail(updateUserDTO.getEmail());
         findIfUserExists.setName(updateUserDTO.getName());
         findIfUserExists.setPassword(new BCryptPasswordEncoder().encode(updateUserDTO.getPassword()));
@@ -50,11 +54,12 @@ public class AuthServiceImpl implements AuthService {
         return registerDTO;
     }
 
-    public UpdateUserDTO getUser(Long id){
-        User findIfUserExists = userRepository.findById(id);
-        if(findIfUserExists == null){
+    public UpdateUserDTO getUser(UUID id){
+        Optional<User> queryResult = userRepository.findById(id);
+        if(queryResult.isEmpty()){
             return new UpdateUserDTO();
         }
+        User findIfUserExists = queryResult.get();
         UpdateUserDTO user = new UpdateUserDTO();
         user.setEmail(findIfUserExists.getEmail());
         user.setName(findIfUserExists.getName());

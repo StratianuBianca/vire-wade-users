@@ -5,8 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface SongRepository extends JpaRepository<Song, Long> {
-    Optional<Song> findById(Long id);
+public interface SongRepository extends JpaRepository<Song, UUID> {
+    Optional<Song> findById(UUID id);
 }

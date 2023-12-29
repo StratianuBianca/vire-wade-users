@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -22,7 +23,7 @@ public class ArtistController {
         return new ResponseEntity<>(artistList, HttpStatus.OK);
     }
     @GetMapping("/artists/{artistId}") //ok
-    public ResponseEntity<?> getArtistById(@PathVariable Long artistId){
+    public ResponseEntity<?> getArtistById(@PathVariable UUID artistId){
         ArtistDTO artist = artistService.getArtistById(artistId);
         return new ResponseEntity<>(artist, HttpStatus.OK);
 
@@ -33,7 +34,7 @@ public class ArtistController {
         return new ResponseEntity<>(artist, HttpStatus.OK);
     }
     @PutMapping("/artists/{artistId}") //ok
-    public ResponseEntity<?> putArtist(@PathVariable Long artistId, @RequestBody ArtistDTO artistDTO){
+    public ResponseEntity<?> putArtist(@PathVariable UUID artistId, @RequestBody ArtistDTO artistDTO){
         artistDTO.setId(artistId);
         ArtistDTO artist = artistService.updateArtist(artistDTO);
         if(artist.getId() == null){
@@ -43,7 +44,7 @@ public class ArtistController {
     }
 
     @DeleteMapping("/artists/{artistId}") //ok
-    public ResponseEntity<?> deleteArtistById(@PathVariable Long artistId){
+    public ResponseEntity<?> deleteArtistById(@PathVariable UUID artistId){
         boolean exist = artistService.deleteArtist(artistId);
         if(exist){
             return new ResponseEntity<>(HttpStatus.OK);

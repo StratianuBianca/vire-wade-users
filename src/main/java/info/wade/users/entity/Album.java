@@ -8,6 +8,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "album")
@@ -16,9 +17,9 @@ import java.util.List;
 @Setter
 public class Album {
     @Id
-    @Column(name = "album_id", length = 45)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    @Column(name = "album_id")
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     private String title;
     private String description;

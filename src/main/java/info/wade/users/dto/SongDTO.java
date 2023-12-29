@@ -2,11 +2,12 @@ package info.wade.users.dto;
 
 import lombok.Data;
 import java.util.Date;
+import java.util.UUID;
 
 @Data
 public class SongDTO {
 
-    private Long id;
+    private UUID id;
 
     private String title;
 
@@ -16,6 +17,6 @@ public class SongDTO {
 
     private Date release_date;
 
-    private Long albumId;
+    private UUID albumId;
 
 }

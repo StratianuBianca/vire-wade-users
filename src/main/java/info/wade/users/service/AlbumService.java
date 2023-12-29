@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AlbumService {
@@ -40,7 +41,7 @@ public class AlbumService {
 
     }
 
-    public AlbumDTO getAlbumById(Long albumId){
+    public AlbumDTO getAlbumById(UUID albumId){
         Optional<Album> queryResult = albumRepository.findById(albumId);
         AlbumDTO albumDTO = new AlbumDTO();
         if(queryResult.isPresent()){
@@ -55,13 +56,13 @@ public class AlbumService {
 
     private void setAlbum(AlbumDTO albumDTO, Album album) {
         List<Artist> artists = album.getArtists();
-        List<Long> artistsIds = new ArrayList<>();
+        List<UUID> artistsIds = new ArrayList<>();
         for(Artist artist:artists){
             artistsIds.add(artist.getId());
         }
         albumDTO.setArtistIds(artistsIds);
         List<Song> songs = album.getSongs();
-        List<Long> songIds = new ArrayList<>();
+        List<UUID> songIds = new ArrayList<>();
         for(Song song:songs){
             songIds.add(song.getId());
         }
@@ -77,9 +78,9 @@ public class AlbumService {
         return newAlbum;
 
     }
-    private void setArtistToAlbum(Album album, List<Long> ids){
+    private void setArtistToAlbum(Album album, List<UUID> ids){
         List<Artist> artists = new ArrayList<>();
-        for(Long id:ids){
+        for(UUID id:ids){
             Optional<Artist> queryResult = artistRepository.findById(id);
             if(queryResult.isPresent()){
                 Artist artist = queryResult.get();
@@ -90,24 +91,24 @@ public class AlbumService {
         }
         album.setArtists(artists);
     }
-    private List<Artist> setArtist(List<Long> artistIds){
+    private List<Artist> setArtist(List<UUID> artistIds){
         List<Artist> artists = new ArrayList<>();
-        for(Long id: artistIds){
+        for(UUID id: artistIds){
             Optional<Artist> queryResult = artistRepository.findById(id);
             queryResult.ifPresent(artists::add);
         }
         return artists;
     }
-    private List<Song> setSongs(List<Long> songsIds, Album album){
+    private List<Song> setSongs(List<UUID> songsIds, Album album){
         List<Song> songs = new ArrayList<>();
-        for(Long id: songsIds){
+        for(UUID id: songsIds){
             Optional<Song> queryResult = songRepository.findById(id);
             queryResult.ifPresent(songs::add);
         }
         return songs;
     }
 
-    public boolean deleteAlbum(Long id){
+    public boolean deleteAlbum(UUID id){
         Optional<Album> queryResult = albumRepository.findById(id);
         if(queryResult.isPresent()){
             Album album = queryResult.get();

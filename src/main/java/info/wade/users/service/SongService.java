@@ -13,10 +13,7 @@ import info.wade.users.repository.SongRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class SongService {
@@ -42,17 +39,16 @@ public class SongService {
             songDTO.setRelease_date(song.getRelease_date());
             songDTO.setId(song.getId());
             songDTO.setAlbumId(song.getAlbum().getId());
-            List<Long> ids = new ArrayList<>();
             songDTOS.add(songDTO);
         }
         return songDTOS;
     }
 
-    public boolean addSongToMultiplePlaylists(Long songId, Long userId, PlaylistsDTO playlistIds){
+    public boolean addSongToMultiplePlaylists(UUID songId, UUID userId, PlaylistsDTO playlistIds){
         Optional<Song> queryResult = songRepository.findById(songId);
         if(queryResult.isPresent()){
             Song song = queryResult.get();
-            for(Long id:playlistIds.getPlaylistIds()){
+            for(UUID id:playlistIds.getPlaylistIds()){
                 Optional<Playlist> queryPlaylist = playlistRepository.findById(id);
                 if(queryPlaylist.isPresent()){
                     Playlist playlist = queryPlaylist.get();
@@ -71,10 +67,9 @@ public class SongService {
 
         return false;
     }
-    public boolean isUserInUsersList(List<User> users, Long userId){
+    public boolean isUserInUsersList(List<User> users, UUID userId){
 
         for(User user:users){
-            System.out.println(userId + "  " + user.getId());
             if(Objects.equals(user.getId(), userId)){
                 return true;
             }
@@ -82,7 +77,7 @@ public class SongService {
         return false;
     }
 
-    public SongDTO getSongById(Long songId){
+    public SongDTO getSongById(UUID songId){
         Optional<Song> queryResult = songRepository.findById(songId);
         SongDTO songDTO = new SongDTO();
         if(queryResult.isPresent()){
@@ -98,7 +93,7 @@ public class SongService {
         return songDTO;
     }
 
-    public boolean deleteSong(Long songId){
+    public boolean deleteSong(UUID songId){
         Optional<Song> queryResult = songRepository.findById(songId);
         if(queryResult.isPresent()){
             Song song = queryResult.get();
@@ -144,7 +139,7 @@ public class SongService {
         }
         return new SongDTO();
     }
-    public List<PlaylistDTO> getAllPlaylistWithSong(Long songId){
+    public List<PlaylistDTO> getAllPlaylistWithSong(UUID songId){
         Optional<Song> queryResult = songRepository.findById(songId);
         if(queryResult.isPresent()){
             List<PlaylistDTO> playlistDTOS = new ArrayList<>();
@@ -157,13 +152,13 @@ public class SongService {
                     playlistDTO.setId(playlist.getPlaylist_id());
                     playlistDTO.setCategory(playlist.getCategory());
                     List<User> users = playlist.getUsers();
-                    List<Long> userIds = new ArrayList<>();
+                    List<UUID> userIds = new ArrayList<>();
                     for(User user:users){
                         userIds.add(user.getId());
                     }
                     playlistDTO.setUserIds(userIds);
                     List<Song> songs = playlist.getSongs();
-                    List<Long> ids = new ArrayList<>();
+                    List<UUID> ids = new ArrayList<>();
                     for(Song song:songs){
                         ids.add(song.getId());
                     }
@@ -176,23 +171,4 @@ public class SongService {
         return new ArrayList<>();
     }
 
-    private List<Playlist> setPlaylist(List<Long> ids){
-        List<Playlist> playlists = new ArrayList<>();
-        for(Long id:ids){
-            Optional<Playlist> playlist = playlistRepository.findById(id);
-            playlist.ifPresent(playlists::add);
-        }
-        System.out.println(playlists);
-        return playlists;
-    }
-    private void addSongToPlaylist(List<Long> ids, Song song){
-        for(Long id:ids){
-            Optional<Playlist> playlist = playlistRepository.findById(id);
-            if(playlist.isPresent()){
-                playlist.get().addSong(song);
-                playlistRepository.save(playlist.get());
-            }
-        }
-
-    }
 }

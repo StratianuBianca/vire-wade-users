@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/api")
 public class UserController {
@@ -22,7 +24,7 @@ public class UserController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<?> getUser(@PathVariable Long userId){
+    public ResponseEntity<?> getUser(@PathVariable UUID userId){
         UpdateUserDTO getUser = authService.getUser(userId);
         return new ResponseEntity<>(getUser, HttpStatus.OK);
     }

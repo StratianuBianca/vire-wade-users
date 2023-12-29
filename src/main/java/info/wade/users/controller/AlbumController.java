@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -22,7 +23,7 @@ public class AlbumController {
         return new ResponseEntity<>(albumList, HttpStatus.OK);
     }
     @GetMapping("/albums/{albumId}") //ok
-    public ResponseEntity<?> getAlbumById(@PathVariable Long albumId){
+    public ResponseEntity<?> getAlbumById(@PathVariable UUID albumId){
         AlbumDTO album = albumService.getAlbumById(albumId);
         return new ResponseEntity<>(album, HttpStatus.OK);
 
@@ -35,7 +36,7 @@ public class AlbumController {
     }
 
     @PutMapping("/albums/{albumId}") //ok cred, de revazut la list songs
-    public ResponseEntity<?> putAlbum(@PathVariable Long albumId, @RequestBody AlbumDTO albumDTO) {
+    public ResponseEntity<?> putAlbum(@PathVariable UUID albumId, @RequestBody AlbumDTO albumDTO) {
         albumDTO.setId(albumId);
         AlbumDTO album = albumService.updateAlbum(albumDTO);
         if(album.getId() == null){
@@ -45,7 +46,7 @@ public class AlbumController {
 
     }
     @DeleteMapping("/albums/{albumId}") //ok, cand stergem albumul se sterg si melodiile
-    public ResponseEntity<?> deleteAlbumById(@PathVariable Long albumId){
+    public ResponseEntity<?> deleteAlbumById(@PathVariable UUID albumId){
         boolean exist = albumService.deleteAlbum(albumId);
         if(exist){
             return new ResponseEntity<>(HttpStatus.OK);

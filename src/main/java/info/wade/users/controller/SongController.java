@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -24,7 +25,7 @@ public class SongController {
         return new ResponseEntity<>(songList, HttpStatus.OK);
     }
     @GetMapping("/songs/{songId}") //ok
-    public ResponseEntity<?> getSongById(@PathVariable Long songId){
+    public ResponseEntity<?> getSongById(@PathVariable UUID songId){
         SongDTO song = songService.getSongById(songId);
         return new ResponseEntity<>(song, HttpStatus.OK);
 
@@ -39,7 +40,7 @@ public class SongController {
     }
 
     @PutMapping("/songs/{songId}") //ok
-    public ResponseEntity<?> putSong(@PathVariable Long songId, @RequestBody SongDTO songDTO) {
+    public ResponseEntity<?> putSong(@PathVariable UUID songId, @RequestBody SongDTO songDTO) {
         songDTO.setId(songId);
         SongDTO song = songService.updateSong(songDTO);
         if(song.getId() == null){
@@ -48,7 +49,7 @@ public class SongController {
         return new ResponseEntity<>(song, HttpStatus.OK);
     }
     @PutMapping("/songs/{songId}/playlists/user/{userId}")
-    public ResponseEntity<?> postSongToMultiplePlaylists(@PathVariable Long songId, @PathVariable Long userId, @RequestBody PlaylistsDTO playlistIds){
+    public ResponseEntity<?> postSongToMultiplePlaylists(@PathVariable UUID songId, @PathVariable UUID userId, @RequestBody PlaylistsDTO playlistIds){
         boolean exist = songService.addSongToMultiplePlaylists(songId, userId, playlistIds);
         if(exist){
             return new ResponseEntity<>(HttpStatus.OK);
@@ -56,7 +57,7 @@ public class SongController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     @GetMapping("/songs/playlists/{songId}") //ok
-    public ResponseEntity<?> getAllPlaylistWithSong(@PathVariable Long songId){
+    public ResponseEntity<?> getAllPlaylistWithSong(@PathVariable UUID songId){
         List<PlaylistDTO> playlists = songService.getAllPlaylistWithSong(songId);
         if(playlists.size() == 0){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -66,7 +67,7 @@ public class SongController {
     }
 
     @DeleteMapping("/songs/{songId}") ///ok
-    public ResponseEntity<?> deleteSongById(@PathVariable Long songId){
+    public ResponseEntity<?> deleteSongById(@PathVariable UUID songId){
         boolean exist = songService.deleteSong(songId);
         if(exist){
             return new ResponseEntity<>(HttpStatus.OK);

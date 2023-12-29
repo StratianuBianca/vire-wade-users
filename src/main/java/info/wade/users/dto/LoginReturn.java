@@ -2,9 +2,11 @@ package info.wade.users.dto;
 
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class LoginReturn {
     private String jwt;
-    private Long id;
+    private UUID id;
     private String username;
 }
