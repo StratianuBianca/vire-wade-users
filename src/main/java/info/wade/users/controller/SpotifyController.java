@@ -1,13 +1,13 @@
 package info.wade.users.controller;
 
+import info.wade.users.dto.SpotifyDTO;
 import info.wade.users.service.SpotifyService;
 import info.wade.users.service.UserService;
 import org.apache.hc.core5.http.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
@@ -35,7 +35,7 @@ public class SpotifyController {
     private UserService userService;
 
     @GetMapping("/login")
-    public String spotifyLogin() {
+    public ResponseEntity<?> spotifyLogin() {
         SpotifyApi object = spotifyService.getSpotifyObject();
 
         AuthorizationCodeUriRequest authorizationCodeUriRequest = object.authorizationCodeUri()
@@ -44,10 +44,12 @@ public class SpotifyController {
                 .build();
 
         final URI uri = authorizationCodeUriRequest.execute();
-        return uri.toString();
+        SpotifyDTO spotifyDTO = new SpotifyDTO();
+        spotifyDTO.setUri(uri.toString());
+        return new ResponseEntity<>(spotifyDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/getToken")
+    @PutMapping("/getToken")
     public void getUserSpotifyToken(@RequestParam("code") String token, @RequestParam("userId") UUID userId){
         SpotifyApi object = spotifyService.getSpotifyObject();
         AuthorizationCodeRequest authorizationCodeRequest = object.authorizationCode(token).build();
