@@ -42,7 +42,7 @@ public class PlaylistController {
         return new ResponseEntity<>(songs, HttpStatus.OK);
     }
 
-    @GetMapping("/playlists/verify/user/{userId}/playlist/{playlistId}")
+    @GetMapping("/user/{userId}/share-playlist/{playlistId}")
     public ResponseEntity<?> verifyIfUserIsOk(@PathVariable UUID userId, @PathVariable UUID playlistId){
         boolean isOk = playlistService.verifyIfUserHasPlaylist(userId, playlistId);
         if(isOk){
