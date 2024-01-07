@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -29,5 +30,7 @@ public class User {
     private String spotifyToken;
 
     private String RefreshToken;
+
+    private Date spotifyExpirationToken;
 
 }

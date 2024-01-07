@@ -21,8 +21,11 @@ import se.michaelthelin.spotify.requests.data.users_profile.GetCurrentUsersProfi
 
 import java.io.IOException;
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/api/spotify")
@@ -68,6 +71,18 @@ public class SpotifyController {
         } catch (Exception e) {
             System.out.println("Exception occured while getting user code: " + e);
         }
+    }
+
+    @GetMapping(value = "/verify")
+    public boolean verifySpotifyToken(@RequestParam UUID userId){
+        info.wade.users.entity.User user = userService.getUserById(userId);
+        if(user.getSpotifyToken() == null)
+            return false;
+        Date date = user.getSpotifyExpirationToken();
+        Date currentTime = new Date();
+        long hours = TimeUnit.MILLISECONDS.toHours(currentTime.getTime());
+        long hours2 = TimeUnit.MILLISECONDS.toHours(date.getTime());
+        return hours != hours2 +1;
     }
 
     @GetMapping(value = "/userTopSongs")

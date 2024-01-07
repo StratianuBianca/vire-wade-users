@@ -5,6 +5,9 @@ import info.wade.users.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,6 +23,7 @@ public class UserService {
             User user = queryResult.get();
             user.setSpotifyToken(token);
             user.setRefreshToken(refreshToken);
+            user.setSpotifyExpirationToken(Date.from(LocalDateTime.now().atZone(ZoneId.of("Europe/Bucharest")).toInstant()));
             userRepository.save(user);
         }
 

@@ -28,6 +28,7 @@ public class AuthServiceImpl implements AuthService {
         user.setName(registerDTO.getName());
         user.setEmail(registerDTO.getEmail());
         user.setPassword(new BCryptPasswordEncoder().encode(registerDTO.getPassword()));
+        user.setSpotifyToken(null);
         User createdUser = userRepository.save(user);
         UserDTO userDTO = new UserDTO();
         userDTO.setEmail(createdUser.getEmail());

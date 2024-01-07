@@ -153,7 +153,6 @@ public class PlaylistService {
             }
             playlist.setUsers(users);
             playlist.setTitle(playlistDTO.getTitle());
-            System.out.println(LocalDate.now());
             playlist.setCreate_date(Date.from(LocalDateTime.now().atZone(ZoneId.of("Europe/Bucharest")).toInstant()));
             List<Song> songs = this.setSongs(playlistDTO.getSongIds());
             playlist.setSongs(songs);
