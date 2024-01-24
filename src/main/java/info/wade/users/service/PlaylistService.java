@@ -10,8 +10,6 @@ import info.wade.users.repository.SongRepository;
 import info.wade.users.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -213,11 +211,12 @@ public class PlaylistService {
             for(Song song:playlist.get().getSongs()){
                 SongDTO songDTO = new SongDTO();
                 songDTO.setId(song.getId());
-                songDTO.setLength(song.getLength());
-                songDTO.setDescription(song.getDescription());
-                songDTO.setRelease_date(song.getRelease_date());
+                songDTO.setAlbum(song.getAlbum());
+                songDTO.setCreator(song.getCreator());
+                songDTO.setDate(song.getDate());
+                songDTO.setGenre(song.getGenre());
+                songDTO.setVinylLabel(song.getVinylLabel());
                 songDTO.setTitle(song.getTitle());
-                songDTO.setAlbumId(song.getAlbum().getId());
                 songDTOS.add(songDTO);
             };
         }
@@ -233,11 +232,12 @@ public class PlaylistService {
                 for(Song song:playlist.getSongs()){
                     SongDTO songDTO = new SongDTO();
                     songDTO.setId(song.getId());
-                    songDTO.setLength(song.getLength());
-                    songDTO.setDescription(song.getDescription());
-                    songDTO.setRelease_date(song.getRelease_date());
+                    songDTO.setAlbum(song.getAlbum());
+                    songDTO.setCreator(song.getCreator());
+                    songDTO.setDate(song.getDate());
+                    songDTO.setGenre(song.getGenre());
+                    songDTO.setVinylLabel(song.getVinylLabel());
                     songDTO.setTitle(song.getTitle());
-                    songDTO.setAlbumId(song.getAlbum().getId());
                     songDTOS.add(songDTO);
                 }
             }

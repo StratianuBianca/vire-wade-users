@@ -3,11 +3,9 @@ package info.wade.users.service;
 import info.wade.users.dto.PlaylistDTO;
 import info.wade.users.dto.PlaylistsDTO;
 import info.wade.users.dto.SongDTO;
-import info.wade.users.entity.Album;
 import info.wade.users.entity.Playlist;
 import info.wade.users.entity.Song;
 import info.wade.users.entity.User;
-import info.wade.users.repository.AlbumRepository;
 import info.wade.users.repository.PlaylistRepository;
 import info.wade.users.repository.SongRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +20,6 @@ public class SongService {
     private SongRepository songRepository;
 
     @Autowired
-    private AlbumRepository albumRepository;
-
-    @Autowired
     private PlaylistRepository playlistRepository;
 
 
@@ -33,12 +28,12 @@ public class SongService {
         List<SongDTO> songDTOS = new ArrayList<>();
         for(Song song:songs){
             SongDTO songDTO = new SongDTO();
-            songDTO.setDescription(song.getDescription());
-            songDTO.setLength(song.getLength());
+            songDTO.setAlbum(song.getAlbum());
+            songDTO.setCreator(song.getCreator());
+            songDTO.setDate(song.getDate());
+            songDTO.setGenre(song.getGenre());
+            songDTO.setVinylLabel(song.getVinylLabel());
             songDTO.setTitle(song.getTitle());
-            songDTO.setRelease_date(song.getRelease_date());
-            songDTO.setId(song.getId());
-            songDTO.setAlbumId(song.getAlbum().getId());
             songDTOS.add(songDTO);
         }
         return songDTOS;
@@ -82,11 +77,12 @@ public class SongService {
         SongDTO songDTO = new SongDTO();
         if(queryResult.isPresent()){
             Song song = queryResult.get();
-            songDTO.setDescription(song.getDescription());
-            songDTO.setLength(song.getLength());
+            songDTO.setAlbum(song.getAlbum());
+            songDTO.setCreator(song.getCreator());
+            songDTO.setDate(song.getDate());
+            songDTO.setGenre(song.getGenre());
+            songDTO.setVinylLabel(song.getVinylLabel());
             songDTO.setTitle(song.getTitle());
-            songDTO.setRelease_date(song.getRelease_date());
-            songDTO.setAlbumId(song.getAlbum().getId());
             songDTO.setId(song.getId());
 
         }
@@ -104,36 +100,29 @@ public class SongService {
     }
 
     public SongDTO createSong(SongDTO songDTO){
-        Optional<Album> album = albumRepository.findById(songDTO.getAlbumId());
         Song song = new Song();
-        if(album.isPresent()){
-            song.setAlbum(album.get());
-            song.setLength(songDTO.getLength());
-            song.setTitle(songDTO.getTitle());
-            song.setDescription(songDTO.getDescription());
-            song.setRelease_date(songDTO.getRelease_date());
-            songRepository.save(song);
-            Album album1 = album.get();
-            album1.addToSongs(song);
-            albumRepository.save(album1);
-            songDTO.setId(song.getId());
-        }
+        song.setAlbum(songDTO.getAlbum());
+        song.setCreator(songDTO.getCreator());
+        song.setDate(songDTO.getDate());
+        song.setGenre(songDTO.getGenre());
+        song.setVinylLabel(songDTO.getVinylLabel());
+        song.setTitle(songDTO.getTitle());
+        songRepository.save(song);
+        songDTO.setId(song.getId());
         return songDTO;
     }
     public SongDTO updateSong(SongDTO songDTO){
         Optional<Song> queryResult = songRepository.findById(songDTO.getId());
-        Optional<Album> album = albumRepository.findById(songDTO.getAlbumId());
-        if(queryResult.isPresent() && album.isPresent()){
+        if(queryResult.isPresent()){
             Song song = queryResult.get();
-            song.setAlbum(album.get());
-            song.setLength(songDTO.getLength());
+            song.setAlbum(songDTO.getAlbum());
+            song.setCreator(songDTO.getCreator());
+            song.setDate(songDTO.getDate());
+            song.setGenre(songDTO.getGenre());
+            song.setVinylLabel(songDTO.getVinylLabel());
             song.setTitle(songDTO.getTitle());
-            song.setDescription(songDTO.getDescription());
-            song.setRelease_date(songDTO.getRelease_date());
+
             songRepository.save(song);
-            Album album1 = album.get();
-            album1.addToSongs(song);
-            albumRepository.save(album1);
             songDTO.setId(song.getId());
             return songDTO;
         }
