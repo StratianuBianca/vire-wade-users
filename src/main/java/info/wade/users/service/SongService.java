@@ -34,6 +34,8 @@ public class SongService {
             songDTO.setGenre(song.getGenre());
             songDTO.setVinylLabel(song.getVinylLabel());
             songDTO.setTitle(song.getTitle());
+            songDTO.setDiscogs(song.getDiscogs());
+            songDTO.setDiscogs_image(song.getDiscogs_image());
             songDTOS.add(songDTO);
         }
         return songDTOS;
@@ -83,6 +85,8 @@ public class SongService {
             songDTO.setGenre(song.getGenre());
             songDTO.setVinylLabel(song.getVinylLabel());
             songDTO.setTitle(song.getTitle());
+            songDTO.setDiscogs_image(song.getDiscogs_image());
+            songDTO.setDiscogs(song.getDiscogs());
             songDTO.setId(song.getId());
 
         }
@@ -107,6 +111,8 @@ public class SongService {
         song.setGenre(songDTO.getGenre());
         song.setVinylLabel(songDTO.getVinylLabel());
         song.setTitle(songDTO.getTitle());
+        song.setDiscogs(songDTO.getDiscogs());
+        song.setDiscogs_image(songDTO.getDiscogs_image());
         songRepository.save(song);
         songDTO.setId(song.getId());
         return songDTO;
@@ -121,6 +127,8 @@ public class SongService {
             song.setGenre(songDTO.getGenre());
             song.setVinylLabel(songDTO.getVinylLabel());
             song.setTitle(songDTO.getTitle());
+            song.setDiscogs_image(songDTO.getDiscogs_image());
+            song.setDiscogs(songDTO.getDiscogs());
 
             songRepository.save(song);
             songDTO.setId(song.getId());

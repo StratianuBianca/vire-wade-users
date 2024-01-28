@@ -86,8 +86,9 @@ public class PlaylistController {
     @PutMapping("/playlists/users/{playlistId}/{userId}")
     public ResponseEntity<?> addUserToPlaylist(@PathVariable UUID playlistId, @PathVariable UUID userId){
         boolean ok = playlistService.addUserToPlaylist(playlistId, userId);
+        String url = "http://localhost:3000/"+ playlistId +"/share";
         if(ok){
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(url,HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
