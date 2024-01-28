@@ -1,15 +1,17 @@
 package info.wade.users.controller;
 
+import info.wade.users.dto.ArtistSpotifyDTO;
+import info.wade.users.dto.SongSpotifyDTO;
 import info.wade.users.dto.SpotifyDTO;
+import info.wade.users.service.ArtistSpotifyService;
+import info.wade.users.service.SongSpotifyService;
 import info.wade.users.service.SpotifyService;
 import info.wade.users.service.UserService;
-import org.apache.hc.core5.http.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import se.michaelthelin.spotify.SpotifyApi;
-import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import se.michaelthelin.spotify.model_objects.specification.*;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeRequest;
@@ -22,10 +24,9 @@ import se.michaelthelin.spotify.requests.data.users_profile.GetCurrentUsersProfi
 import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/spotify")
@@ -33,6 +34,12 @@ public class SpotifyController {
 
     @Autowired
     private SpotifyService spotifyService;
+
+    @Autowired
+    ArtistSpotifyService artistSpotifyService;
+
+    @Autowired
+    SongSpotifyService songSpotifyService;
 
     @Autowired
     private UserService userService;
@@ -101,7 +108,18 @@ public class SpotifyController {
 
         try {
             final Paging<Track> trackPaging = getUsersTopTracksRequest.execute();
-
+            Track[] tracks = trackPaging.getItems();
+            List<SongSpotifyDTO> songSpotifyDTOS = new ArrayList<>();
+            for (Track track : tracks) {
+                SongSpotifyDTO songSpotifyDTO = new SongSpotifyDTO();
+                songSpotifyDTO.setUrl(track.getAlbum().getImages()[1].getUrl());
+                songSpotifyDTO.setName(track.getName());
+                songSpotifyDTO.setSpotifyUrl(track.getExternalUrls().get("spotify"));
+                songSpotifyDTO.setArtists(getArtistsAsString(track.getArtists()));
+                songSpotifyDTO.setUserId(userId);
+                songSpotifyDTOS.add(songSpotifyDTO);
+            }
+            songSpotifyService.createMultipleSongsSpotify(songSpotifyDTOS);
             return trackPaging.getItems();
         } catch (Exception e) {
             System.out.println("Exception occured while fetching top songs: " + e);
@@ -112,7 +130,7 @@ public class SpotifyController {
 
 
     @GetMapping(value = "/userTopArtists")
-    public Artist[] getUserTopArtist(@RequestParam UUID userId) throws IOException, ParseException, SpotifyWebApiException {
+    public Artist[] getUserTopArtist(@RequestParam UUID userId) {
         info.wade.users.entity.User user = userService.getUserById(userId);
 
         SpotifyApi object = spotifyService.getSpotifyObject();
@@ -127,8 +145,19 @@ public class SpotifyController {
 
         try {
             final Paging<Artist> artistPaging = getUsersTopArtistsRequest.execute();
+            Artist[] artists = artistPaging.getItems();
+            List<ArtistSpotifyDTO> artistSpotifyDTOS = new ArrayList<>();
+            for (Artist artist : artists) {
+                ArtistSpotifyDTO artistSpotifyDTO = new ArtistSpotifyDTO();
+                artistSpotifyDTO.setUrl(artist.getImages()[1].getUrl());
+                artistSpotifyDTO.setUrlSpotify(artist.getExternalUrls().get("spotify"));
+                artistSpotifyDTO.setGenres(String.join(", ", artist.getGenres()));
+                artistSpotifyDTO.setUserId(userId);
+                artistSpotifyDTOS.add(artistSpotifyDTO);
+            }
+            artistSpotifyService.createMultipleArtistsSpotify(artistSpotifyDTOS);
             return artistPaging.getItems();
-        }catch (Exception e){
+        } catch (Exception e){
             System.out.println("exception");
         }
         return new Artist[0];
@@ -158,4 +187,13 @@ public class SpotifyController {
 
         return new SavedAlbum[0];
     }
+    private String getArtistsAsString(ArtistSimplified[] artists) {
+        if (artists != null && artists.length > 0) {
+            return Arrays.stream(artists)
+                    .map(ArtistSimplified::getName)
+                    .collect(Collectors.joining(", "));
+        }
+        return null;
+    }
+
 }

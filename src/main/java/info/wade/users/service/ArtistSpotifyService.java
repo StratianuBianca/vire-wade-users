@@ -2,9 +2,7 @@ package info.wade.users.service;
 
 import info.wade.users.dto.ArtistSpotifyDTO;
 import info.wade.users.dto.ArtistsSpotifyDTO;
-import info.wade.users.dto.SongSpotifyDTO;
 import info.wade.users.entity.ArtistSpotify;
-import info.wade.users.entity.SongSpotify;
 import info.wade.users.entity.User;
 import info.wade.users.repository.ArtistSpotifyRepository;
 import info.wade.users.repository.UserRepository;
@@ -27,7 +25,8 @@ public class ArtistSpotifyService {
     public ArtistSpotifyDTO createArtistSpotify(ArtistSpotifyDTO artistSpotifyDTO){
         ArtistSpotify artistSpotify = new ArtistSpotify();
         Optional<User> optionalUser = userRepository.findById(artistSpotifyDTO.getUserId());
-        if(optionalUser.isPresent()){
+        Optional<ArtistSpotify> optionalArtistSpotify = artistSpotifyRepository.findByUserIdAndUrlSpotify(artistSpotifyDTO.getUserId(), artistSpotifyDTO.getUrlSpotify());
+        if(optionalUser.isPresent() && optionalArtistSpotify.isEmpty()){
             artistSpotify.setUrl(artistSpotify.getUrl());
             artistSpotify.setUrlSpotify(artistSpotify.getUrlSpotify());
             artistSpotify.setGenres(artistSpotify.getGenres());
@@ -47,6 +46,13 @@ public class ArtistSpotifyService {
             updatedList.add(spotifyDTO);
         }
         return updatedList;
+    }
+    public void createMultipleArtistsSpotify(List<ArtistSpotifyDTO> artistSpotifyDTOList){
+        List<ArtistSpotifyDTO> updatedList = new ArrayList<>();
+        for(ArtistSpotifyDTO artistSpotifyDTO: artistSpotifyDTOList){
+            ArtistSpotifyDTO spotifyDTO = createArtistSpotify(artistSpotifyDTO);
+            updatedList.add(spotifyDTO);
+        }
     }
 
     public List<ArtistSpotifyDTO> getAllArtistByUser(UUID userId){

@@ -24,11 +24,13 @@ public class SongSpotifyService {
     public SongSpotifyDTO createSongSpotify(SongSpotifyDTO songSpotifyDTO){
         SongSpotify songSpotify = new SongSpotify();
         Optional<User> optionalUser = userRepository.findById(songSpotifyDTO.getUserId());
-        if(optionalUser.isPresent()){
+        Optional<SongSpotify> optionalSongSpotify = songSpotifyRepository.findBySpotifyUrlAndUserId(songSpotifyDTO.getSpotifyUrl(), songSpotifyDTO.getUserId());
+        if(optionalUser.isPresent() && optionalSongSpotify.isEmpty()){
             songSpotify.setUrl(songSpotifyDTO.getUrl());
             songSpotify.setArtists(songSpotifyDTO.getArtists());
             songSpotify.setName(songSpotifyDTO.getName());
             songSpotify.setUserId(songSpotifyDTO.getUserId());
+            songSpotify.setSpotifyUrl(songSpotifyDTO.getSpotifyUrl());
             songSpotifyRepository.save(songSpotify);
             songSpotifyDTO.setSongSpotify_id(songSpotify.getSongSpotify_id());
             return songSpotifyDTO;
@@ -44,6 +46,13 @@ public class SongSpotifyService {
             updatedList.add(spotifyDTO);
         }
         return updatedList;
+    }
+    public void createMultipleSongsSpotify(List<SongSpotifyDTO> songSpotifyDTOList){
+        List<SongSpotifyDTO> updatedList = new ArrayList<>();
+        for(SongSpotifyDTO songSpotifyDTO: songSpotifyDTOList){
+            SongSpotifyDTO spotifyDTO = createSongSpotify(songSpotifyDTO);
+            updatedList.add(spotifyDTO);
+        }
     }
 
 //    public SongSpotifyDTO updateSongSpotify(SongSpotifyDTO songSpotifyDTO){
@@ -82,6 +91,7 @@ public class SongSpotifyService {
                 songSpotifyDTO.setName(songSpotify.getName());
                 songSpotifyDTO.setSongSpotify_id(songSpotify.getSongSpotify_id());
                 songSpotifyDTO.setUserId(songSpotify.getUserId());
+                songSpotifyDTO.setSpotifyUrl(songSpotify.getSpotifyUrl());
                 songSpotifyDTOS.add(songSpotifyDTO);
 
             }
