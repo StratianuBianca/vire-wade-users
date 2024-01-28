@@ -28,6 +28,7 @@ public class SongService {
         List<SongDTO> songDTOS = new ArrayList<>();
         for(Song song:songs){
             SongDTO songDTO = new SongDTO();
+            songDTO.setId(song.getId());
             songDTO.setAlbum(song.getAlbum());
             songDTO.setCreator(song.getCreator());
             songDTO.setDate(song.getDate());
@@ -79,6 +80,7 @@ public class SongService {
         SongDTO songDTO = new SongDTO();
         if(queryResult.isPresent()){
             Song song = queryResult.get();
+            songDTO.setId(song.getId());
             songDTO.setAlbum(song.getAlbum());
             songDTO.setCreator(song.getCreator());
             songDTO.setDate(song.getDate());
