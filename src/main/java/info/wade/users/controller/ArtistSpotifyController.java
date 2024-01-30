@@ -16,7 +16,7 @@ import java.util.UUID;
 public class ArtistSpotifyController {
 
     @Autowired
-    ArtistSpotifyService artistSpotifyService;  ///aiciiii
+    ArtistSpotifyService artistSpotifyService;
 
     @GetMapping("/artists/spotify/{userId}")
     public ResponseEntity<?> getArtistSpotifyByUser(@PathVariable UUID userId){
