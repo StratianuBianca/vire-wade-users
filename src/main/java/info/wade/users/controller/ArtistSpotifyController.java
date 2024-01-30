@@ -2,8 +2,6 @@ package info.wade.users.controller;
 
 import info.wade.users.dto.ArtistSpotifyDTO;
 import info.wade.users.dto.ArtistsSpotifyDTO;
-import info.wade.users.dto.SongSpotifyDTO;
-import info.wade.users.dto.SongsSpotifyDTO;
 import info.wade.users.service.ArtistSpotifyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +16,7 @@ import java.util.UUID;
 public class ArtistSpotifyController {
 
     @Autowired
-    ArtistSpotifyService artistSpotifyService;
+    ArtistSpotifyService artistSpotifyService;  ///aiciiii
 
     @GetMapping("/artists/spotify/{userId}")
     public ResponseEntity<?> getArtistSpotifyByUser(@PathVariable UUID userId){

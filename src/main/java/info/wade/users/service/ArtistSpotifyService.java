@@ -27,10 +27,10 @@ public class ArtistSpotifyService {
         Optional<User> optionalUser = userRepository.findById(artistSpotifyDTO.getUserId());
         Optional<ArtistSpotify> optionalArtistSpotify = artistSpotifyRepository.findByUserIdAndUrlSpotify(artistSpotifyDTO.getUserId(), artistSpotifyDTO.getUrlSpotify());
         if(optionalUser.isPresent() && optionalArtistSpotify.isEmpty()){
-            artistSpotify.setUrl(artistSpotify.getUrl());
-            artistSpotify.setUrlSpotify(artistSpotify.getUrlSpotify());
-            artistSpotify.setGenres(artistSpotify.getGenres());
-            artistSpotify.setUserId(artistSpotify.getUserId());
+            artistSpotify.setUrl(artistSpotifyDTO.getUrl());
+            artistSpotify.setUrlSpotify(artistSpotifyDTO.getUrlSpotify());
+            artistSpotify.setGenres(artistSpotifyDTO.getGenres());
+            artistSpotify.setUserId(artistSpotifyDTO.getUserId());
             artistSpotifyRepository.save(artistSpotify);
             artistSpotifyDTO.setArtistSpotify_id(artistSpotify.getArtistSpotify_id());
             return artistSpotifyDTO;
