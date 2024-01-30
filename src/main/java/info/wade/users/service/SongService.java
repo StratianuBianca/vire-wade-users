@@ -9,6 +9,8 @@ import info.wade.users.entity.User;
 import info.wade.users.repository.PlaylistRepository;
 import info.wade.users.repository.SongRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -27,6 +29,25 @@ public class SongService {
         List<Song> songs = songRepository.findAll();
         List<SongDTO> songDTOS = new ArrayList<>();
         for(Song song:songs){
+            SongDTO songDTO = new SongDTO();
+            songDTO.setId(song.getId());
+            songDTO.setAlbum(song.getAlbum());
+            songDTO.setCreator(song.getCreator());
+            songDTO.setDate(song.getDate());
+            songDTO.setGenre(song.getGenre());
+            songDTO.setVinylLabel(song.getVinylLabel());
+            songDTO.setTitle(song.getTitle());
+            songDTO.setDiscogs(song.getDiscogs());
+            songDTO.setDiscogs_image(song.getDiscogs_image());
+            songDTOS.add(songDTO);
+        }
+        return songDTOS;
+    }
+    public List<SongDTO> getAllSongsPageable(Pageable pageable){
+        Page<Song> songPage = songRepository.findAll(pageable);
+        List<Song> songsList = songPage.getContent();
+        List<SongDTO> songDTOS = new ArrayList<>();
+        for(Song song:songsList){
             SongDTO songDTO = new SongDTO();
             songDTO.setId(song.getId());
             songDTO.setAlbum(song.getAlbum());

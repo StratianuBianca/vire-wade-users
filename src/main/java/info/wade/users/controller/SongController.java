@@ -5,6 +5,8 @@ import info.wade.users.dto.PlaylistsDTO;
 import info.wade.users.dto.SongDTO;
 import info.wade.users.service.SongService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +30,13 @@ public class SongController {
     public ResponseEntity<?> getSongById(@PathVariable UUID songId){
         SongDTO song = songService.getSongById(songId);
         return new ResponseEntity<>(song, HttpStatus.OK);
+
+    }
+    @GetMapping("songs/pageable")
+    public ResponseEntity<?> getAllSongsPag(@RequestParam(name = "page",defaultValue = "0") Integer page, @RequestParam(name="size", defaultValue = "12") Integer size){
+        Pageable pageable = PageRequest.of(page, size);
+        List<SongDTO> songDTOS = songService.getAllSongsPageable(pageable);
+        return new ResponseEntity<>(songDTOS, HttpStatus.OK);
 
     }
     @PostMapping("/songs") //ok
