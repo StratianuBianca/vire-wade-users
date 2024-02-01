@@ -153,6 +153,7 @@ public class SpotifyController {
                 artistSpotifyDTO.setUrlSpotify(artist.getExternalUrls().get("spotify"));
                 artistSpotifyDTO.setGenres(String.join(", ", artist.getGenres()));
                 artistSpotifyDTO.setUserId(userId);
+                artistSpotifyDTO.setName(artist.getName());
                 artistSpotifyDTOS.add(artistSpotifyDTO);
             }
             artistSpotifyService.createMultipleArtistsSpotify(artistSpotifyDTOS);

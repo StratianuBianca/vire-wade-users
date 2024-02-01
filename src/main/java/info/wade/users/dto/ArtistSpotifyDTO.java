@@ -11,4 +11,5 @@ public class ArtistSpotifyDTO {
     private String urlSpotify;
     private String genres;
     private UUID userId;
+    private String name;
 }

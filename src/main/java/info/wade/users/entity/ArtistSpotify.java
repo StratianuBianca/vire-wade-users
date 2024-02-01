@@ -19,6 +19,7 @@ public class ArtistSpotify {
     private String url;
     private String urlSpotify;
     private String genres;
+    private String name;
     private UUID userId;
 
 }

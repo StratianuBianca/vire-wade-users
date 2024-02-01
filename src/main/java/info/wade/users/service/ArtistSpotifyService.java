@@ -31,6 +31,7 @@ public class ArtistSpotifyService {
             artistSpotify.setUrlSpotify(artistSpotifyDTO.getUrlSpotify());
             artistSpotify.setGenres(artistSpotifyDTO.getGenres());
             artistSpotify.setUserId(artistSpotifyDTO.getUserId());
+            artistSpotify.setName(artistSpotifyDTO.getName());
             artistSpotifyRepository.save(artistSpotify);
             artistSpotifyDTO.setArtistSpotify_id(artistSpotify.getArtistSpotify_id());
             return artistSpotifyDTO;
@@ -66,6 +67,7 @@ public class ArtistSpotifyService {
                 artistSpotifyDTO.setGenres(artistSpotify.getGenres());
                 artistSpotifyDTO.setUrl(artistSpotify.getUrl());
                 artistSpotifyDTO.setUserId(artistSpotify.getUserId());
+                artistSpotifyDTO.setName(artistSpotify.getName());
 
                 artistSpotifyDTOS.add(artistSpotifyDTO);
 
