@@ -9,14 +9,11 @@ public class SongDTO {
 
     private UUID id;
 
-    private String album;
-
     private String creator;
     private String genre;
 
     private Date date;
     private String vinylLabel;
-    private String title;
     private String discogs;
     private String discogs_image;
 

@@ -31,12 +31,10 @@ public class SongService {
         for(Song song:songs){
             SongDTO songDTO = new SongDTO();
             songDTO.setId(song.getId());
-            songDTO.setAlbum(song.getAlbum());
             songDTO.setCreator(song.getCreator());
             songDTO.setDate(song.getDate());
             songDTO.setGenre(song.getGenre());
             songDTO.setVinylLabel(song.getVinylLabel());
-            songDTO.setTitle(song.getTitle());
             songDTO.setDiscogs(song.getDiscogs());
             songDTO.setDiscogs_image(song.getDiscogs_image());
             songDTOS.add(songDTO);
@@ -50,12 +48,10 @@ public class SongService {
         for(Song song:songsList){
             SongDTO songDTO = new SongDTO();
             songDTO.setId(song.getId());
-            songDTO.setAlbum(song.getAlbum());
             songDTO.setCreator(song.getCreator());
             songDTO.setDate(song.getDate());
             songDTO.setGenre(song.getGenre());
             songDTO.setVinylLabel(song.getVinylLabel());
-            songDTO.setTitle(song.getTitle());
             songDTO.setDiscogs(song.getDiscogs());
             songDTO.setDiscogs_image(song.getDiscogs_image());
             songDTOS.add(songDTO);
@@ -102,12 +98,10 @@ public class SongService {
         if(queryResult.isPresent()){
             Song song = queryResult.get();
             songDTO.setId(song.getId());
-            songDTO.setAlbum(song.getAlbum());
             songDTO.setCreator(song.getCreator());
             songDTO.setDate(song.getDate());
             songDTO.setGenre(song.getGenre());
             songDTO.setVinylLabel(song.getVinylLabel());
-            songDTO.setTitle(song.getTitle());
             songDTO.setDiscogs_image(song.getDiscogs_image());
             songDTO.setDiscogs(song.getDiscogs());
             songDTO.setId(song.getId());
@@ -128,12 +122,10 @@ public class SongService {
 
     public SongDTO createSong(SongDTO songDTO){
         Song song = new Song();
-        song.setAlbum(songDTO.getAlbum());
         song.setCreator(songDTO.getCreator());
         song.setDate(songDTO.getDate());
         song.setGenre(songDTO.getGenre());
         song.setVinylLabel(songDTO.getVinylLabel());
-        song.setTitle(songDTO.getTitle());
         song.setDiscogs(songDTO.getDiscogs());
         song.setDiscogs_image(songDTO.getDiscogs_image());
         songRepository.save(song);
@@ -144,12 +136,10 @@ public class SongService {
         Optional<Song> queryResult = songRepository.findById(songDTO.getId());
         if(queryResult.isPresent()){
             Song song = queryResult.get();
-            song.setAlbum(songDTO.getAlbum());
             song.setCreator(songDTO.getCreator());
             song.setDate(songDTO.getDate());
             song.setGenre(songDTO.getGenre());
             song.setVinylLabel(songDTO.getVinylLabel());
-            song.setTitle(songDTO.getTitle());
             song.setDiscogs_image(songDTO.getDiscogs_image());
             song.setDiscogs(songDTO.getDiscogs());
 

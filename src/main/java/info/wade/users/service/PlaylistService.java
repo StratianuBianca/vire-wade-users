@@ -211,12 +211,10 @@ public class PlaylistService {
             for(Song song:playlist.get().getSongs()){
                 SongDTO songDTO = new SongDTO();
                 songDTO.setId(song.getId());
-                songDTO.setAlbum(song.getAlbum());
                 songDTO.setCreator(song.getCreator());
                 songDTO.setDate(song.getDate());
                 songDTO.setGenre(song.getGenre());
                 songDTO.setVinylLabel(song.getVinylLabel());
-                songDTO.setTitle(song.getTitle());
                 songDTOS.add(songDTO);
             };
         }
@@ -232,12 +230,10 @@ public class PlaylistService {
                 for(Song song:playlist.getSongs()){
                     SongDTO songDTO = new SongDTO();
                     songDTO.setId(song.getId());
-                    songDTO.setAlbum(song.getAlbum());
                     songDTO.setCreator(song.getCreator());
                     songDTO.setDate(song.getDate());
                     songDTO.setGenre(song.getGenre());
                     songDTO.setVinylLabel(song.getVinylLabel());
-                    songDTO.setTitle(song.getTitle());
                     songDTOS.add(songDTO);
                 }
             }
