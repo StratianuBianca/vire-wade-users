@@ -32,6 +32,7 @@ public class PlaylistService {
             playlistDTO.setTitle(playlist.getTitle());
             playlistDTO.setId(playlist.getPlaylist_id());
             List<User> users = playlist.getUsers();
+            playlistDTO.setUsername(users.get(0).getName());
             List<UUID> userIds = new ArrayList<>();
             for(User user:users){
                 userIds.add(user.getId());

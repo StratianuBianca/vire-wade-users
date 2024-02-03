@@ -30,9 +30,7 @@ info\wade\users\configuration\WebSecurityConfiguration.class
 info\wade\users\service\auth\AuthService.class
 info\wade\users\jwt\JwtRequestFilter.class
 info\wade\users\controller\AuthenticationController.class
-info\wade\users\controller\DiscogsController.class
 info\wade\users\service\auth\AuthServiceImpl.class
-info\wade\users\controller\HelloController.class
 info\wade\users\controller\SongController.class
 info\wade\users\service\SpotifyService.class
 info\wade\users\util\Main.class

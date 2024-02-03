@@ -14,5 +14,6 @@ public class PlaylistDTO {
     private String title;
     private List<UUID> songIds;
     private List<UUID> userIds;
+    private String username;
     private Date createdDate;
 }
