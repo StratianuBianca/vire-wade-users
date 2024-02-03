@@ -14,7 +14,7 @@ public class SpotifyService {
                 .Builder()
                 .setClientId(clientID)
                 .setClientSecret(clientSecret)
-                .setRedirectUri(SpotifyHttpManager.makeUri("http://localhost:3000/profile"))
+                .setRedirectUri(SpotifyHttpManager.makeUri("http://vinyl-client-env.eba-dkwdeuxe.eu-north-1.elasticbeanstalk.com/profile"))
                 .build();
     }
 
